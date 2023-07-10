@@ -1,0 +1,55 @@
+//BNF-------------------------------------
+<program> ::= {<func>}+
+
+<func> ::= <func_type> <id> ‘(’ <func_args> ‘)’ <block>
+
+//1
+<func_type> ::= ‘void’ | <simple_type_name>
+
+//2
+<func_args> ::= ε | (<func_arg> {‘,’ <func_arg>})
+<func_arg> ::= <all_type_names> <id>
+<all_type_names> ::= ‘int’ | ‘float’ | ‘string’ | ‘bool’ | ‘enum’ | ‘set’
+
+//3
+<block> ::= ‘{‘ { <stmt> }* ‘;’  ‘}’
+<stmt> ::= <for> | <if_cond> | <return> | <tuple>
+
+
+//3.1
+<for> ::= ‘for’ ‘(‘ <for_cond> ‘)’ <block>
+<for_cond> ::= <id> ‘=’ <expr> ‘;’ <boolean_expr> ‘;’ <id> = <expr>
+<expr> ::= <term> [(‘+’ | ‘-’)<term>]
+<term> ::= <factor> [(‘*’ | ‘/’)<factor>]
+<factor> ::= <exp> [‘^’ <exp>]
+
+!!!!!
+<exp> ::= ‘(‘ <expr> ‘)’ | <object_call> | <func_call> | <literal> | <object_func_call>
+<literal> ::= <int> | <float> | <string> | <enum> | <array> | <set> | <bool>
+<func_call> ::= <id> ‘(’ <func_params> ‘)’
+<func_params> ::= ε | (<expr> {‘,’ <expr>})
+<boolean_expr> ::= <exp> (‘==’ | ‘!=’ | ‘>’ | ‘<’ | ‘>=’ | ‘<=’) <exp>
+
+//3.2
+<if_cond> ::= ‘if’ ( <boolean_expr> ) <block> [‘else’ <block>]
+
+//3.3
+<return> ::= ‘return’ <exp>
+
+//3.4
+<tuple> ::= {enum_obj}*
+<enum_obj> ::= <id> [’:’ <int>]
+
+
+?????????????????
+<simple_type> ::= <int> | <float> | <string> | <bool>
+<complex_type> ::= <set> | <array> | <enum>
+
+<init_simple_type> ::= [<simple_type_name>] <id> ‘=’ <simple_type> | <func_call> ’;’
+<enum> ::= [‘enum’] <id> ‘{‘ ε | <enum_obj> {‘,’ <enum_obj>})’}’
+<array> ::= [<simple_type>] <id> ‘[’ ‘]’ ‘=’ ‘new’ <simple_type> ‘[’ <uint> | <func_call>‘]’
+<set> ::= [‘set’] <id> ‘[’ ‘]’ ‘=’ ‘new’ ‘set’ ‘[’ <uint> | <func_call> ‘]’
+
+<object_call> ::= <id> [’.’ <id>]
+<object_func_call> ::= <object_call>  {’.’ <func_call>}
+

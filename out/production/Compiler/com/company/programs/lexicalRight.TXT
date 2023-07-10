@@ -1,0 +1,6 @@
+int main() {
+    int i = -5.7;
+    return i;
+  ~smtiht~ ~ smtiht ~
+  ' commei' ' ad ' ' '
+}

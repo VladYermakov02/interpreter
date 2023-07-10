@@ -1,0 +1,14 @@
+//GRAMMAR LL(1)
+S ::= <program>/1 [end]/2
+<program> ::= ε/3
+<program> ::= <func>/4 <program>/5
+
+// <func>
+<func> ::= <func_type>/6 [id]/7 [LeftRoundBracket]/8 [RightRoundBracket]/9 <block>/10
+
+// <func_type>
+<func_type> ::= [void]/11
+<func_type> ::= [int]/12
+
+// block
+<block> ::= [LeftCurlyBracket]/13 [RightCurlyBracket]/14

@@ -1,0 +1,43 @@
+int masd = 5;
+
+enum E {
+obj1,
+obj2:7,
+obj3:23
+}
+
+int funcName(int e) {
+    text = get_text(masd, x);
+}
+
+void funcName2(enum en) {
+    text = get_text(masd, x);
+}
+
+bool main(float x, string text, float t) {
+x = ((5 / x) * 3.4) - t;
+
+text = get_text(masd, x);
+
+U {
+};
+
+E1 {
+e:9
+};
+
+U = E + E1;
+}
+
+float f = 3.5;
+
+
+
+~int masd = 5;
+bool main() {
+
+}
+float f = 3.5;
+enum e {
+
+}~

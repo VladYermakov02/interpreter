@@ -1,0 +1,366 @@
+//LEXEMES ----------------------------------------------
+//literals
+<literal> : literal
+<dig_literal> : digit
+
+//id
+<id> : id
+
+//dividers
+<LeftRoundBracket> : (
+<RightRoundBracket> : )
+<LeftCurlyBracket> : {
+<RightCurlyBracket> : }
+<LeftSquareBracket> : [
+<RightSquareBracket> : ]
+<Semicolon> : ;
+<Comma> : ,
+<Dot> : .
+<Colon> : :
+
+//operators
+ <Caret> : ^
+ <Addition> : +
+ <Subtraction> : -
+ <Multiplication> : *
+ <Division> : /
+ <Assignment> : =
+ <Less> : <
+ <Greater> : >
+ <Equal> : ==
+ <NotEqual> !=
+ <GreaterEqual> : >=
+ <LessEqual> : <=
+
+//keywords
+ <new> : new
+ <for> : for
+ <if> : if
+ <else> : else
+ <void> : void
+ <int> : int
+ <float> : float
+ <string> : string
+ <bool> : bool
+ <enum> : enum
+ <set> : set
+ <return> : return
+ <null> : null
+
+//GRAMMAR LL1 VER3----------------------------------------------------------------------------
+             F1: adds new element to func descriptor list, its return type
+             F2: adds func name
+             F3: adds first token id in current block
+             F4: adds last token id in current block
+             F5: adds ready function descriptor to a list
+
+             S ::= <program>/1 [end]/2
+     <program> ::= <action>/3 <program>/5
+     <program> ::= ε/4
+      <action> ::= [void]/6+F1 [id]/9+F2 <func_declar>/10
+      <action> ::= [enum]/7 [id]/11 <enum_declar>/12
+      <action> ::= <simple_type>/8+F1 [id]/13+F2 <declaration>/14
+ <declaration> ::= [Assignment]/15 <var_declar>/17
+ <declaration> ::= <func_declar>/16
+  <var_declar> ::= <var_init>/18 [Semicolon]/19
+ <func_declar> ::= <argument>/20 <content>/21
+ <enum_declar> ::= <content>/22
+
+ <simple_type> ::= [int]/23
+ <simple_type> ::= [float]/24
+ <simple_type> ::= [string]/25
+ <simple_type> ::= [bool]/26
+
+    <var_init> ::= [Number]/27
+    <var_init> ::= [String Literal]/28
+    <var_init> ::= <func_call>/29
+    <argument> ::= [LeftRoundBracket]/30 <func_args>/32 [RightRoundBracket]/33
+    <argument> ::= ε/31 // for enum
+     <content> ::= [LeftCurlyBracket]/34 <content_tail>/35 [RightCurlyBracket]/36+F4
+   <func_args> ::= ε/37 // TODO
+
+<content_tail> ::= <func_content>/38 // TODO add reassignment to vars, funcs, enums
+<content_tail> ::= <enum_content>/39
+<func_content> ::= ε/40+F3+F4+F5 // TODO + // TODO change F4 and F5 position
+<enum_content> ::= ε/41 // TODO
+   <func_call> ::= ε/42 // TODO
+// TODO - expressions
+
+//GRAMMAR LL1 VER2----------------------------------------------------------------------------
+             S ::= <program>/1 [end]/2
+     <program> ::= <action>/3 <program>/5
+     <program> ::= ε/4
+      <action> ::= [void]/6 [id]/9 <func_declar>/10
+      <action> ::= [enum]/7 [id]/11 <enum_declar>/12
+      <action> ::= <simple_type>/8 [id]/13 <declaration>/14
+ <declaration> ::= <var_declar>/15
+ <declaration> ::= <func_declar>/16
+  <var_declar> ::= [Assignment]/17 <var_init>/18 [Semicolon]/19
+ <func_declar> ::= <argument>/20 <content>/21
+ <enum_declar> ::= <content>/22
+
+ <simple_type> ::= [int]/23
+ <simple_type> ::= [float]/24
+ <simple_type> ::= [string]/25
+ <simple_type> ::= [bool]/26
+
+    <var_init> ::= [Number]/27
+    <var_init> ::= [String Literal]/28
+    <var_init> ::= <func_call>/29
+    <argument> ::= [LeftRoundBracket]/30 <func_args>/32 [RightRoundBracket]/33
+    <argument> ::= ε/31 // for enum
+     <content> ::= [LeftCurlyBracket]/34 <content_tail>/35 [RightCurlyBracket]/36
+   <func_args> ::= ε/37 // TODO
+
+<content_tail> ::= <func_content>/38 // TODO add reassignment to vars, funcs, enums
+<content_tail> ::= <enum_content>/39
+<func_content> ::= ε/40 // TODO
+<enum_content> ::= ε/41 // TODO
+   <func_call> ::= ε/42 // TODO
+// TODO - expressions
+
+//GRAMMAR LL(1) VER1--------------------------------------------------------------------------
+S ::= <program>/1 <end>/2
+<program> ::= ε/3
+<program> ::= <action>/4 <program>/5
+<action> ::= <enum>/6
+<action> ::= <array>/7
+<action> ::= <set>/8
+<action> ::= <init_simple_type>/9
+<action> ::= <func>/10
+
+//1 <enum>
+<enum> ::= <en_name>/11 [id]/12 [LeftCurlyBracket]/13 <content>/14 [RightCurlyBracket]/15
+<en_name> ::= ε/16
+<en_name> ::= [enum]/17
+<content> ::= ε/18
+<content> ::= <enum_obj>/19 <con_tail>/20
+<con_tail> ::= ε/21
+<con_tail> ::= [Comma]/22 <enum_obj>/23 <con_tail>/24
+
+<enum_obj> ::= ε/25
+<enum_obj> ::= [id]/26 <enobj_tail>/27
+<enobj_tail> ::= ε/28
+<enobj_tail> ::= [Colon]/29 [dig_literal]/30
+
+//2 <array>
+<array> ::= <simple_type_name>/31 [id]/32 [LeftSquareBracket]/33 [RightSquareBracket]/34 [Assignment]/35 [new]/36
+<simple_type_name>/37 [LeftSquareBracket]/38 <arr_value>/39 [RightSquareBracket]/40
+
+<arr_value> ::= [dig_literal]/41
+<arr_value> ::= <func_call>/42
+
+//3 <set>
+<set> ::= <set_name>/43 [id]/44 [LeftSquareBracket]/45 [RightSquareBracket]/46 [Assignment]/47 [new]/48 [set]/49
+[LeftSquareBracket]/50 <set_value>/51 [RightSquareBracket]/52
+
+<set_name> ::= ε/53
+<set_name> ::= [set]/54
+<set_value> ::= [dig_literal]/55
+<set_value> ::= <func_call>/56
+
+//4 <init_simple_type>
+<init_simple_type> ::= <type_name>/57 [id]/58 [Assignment]/59 <value>/60 [Semicolon]/61
+<type_name> ::= ε/62
+<type_name> ::= <simple_type_name>/63
+<simple_type_name> ::= [int]/64
+<simple_type_name> ::= [float]/65
+<simple_type_name> ::= [string]/66
+<simple_type_name> ::= [bool]/67
+<value> ::= [literal]/68
+<value> ::= <func_call>/69
+<func_call> ::= [id]/70 [LeftRoundBracket]/71 <func_params>/72 [RightRoundBracket]/73
+<func_params> ::= ε/74
+<func_params> ::= <expr>/75 <fp_tail>/76
+<fp_tail> ::= ε/77
+<fp_tail> ::= [Comma]/78 <expr>/79 <fp_tail>/80
+
+//5 <func>
+<func> ::= <func_type>/81 [id]/82 [LeftRoundBracket]/83 <func_args>/84 [RightRoundBracket]/85 <block>/86
+
+//5.1 <func_type>
+<func_type> ::= [void]/87
+<func_type> ::= <simple_type_name>/88
+
+//5.2 <func_args>
+<func_args> ::= ε/89
+<func_args> ::= <func_arg>/90 <f_tail>/91
+<f_tail> ::= ε/92
+<f_tail> ::= [Comma]/93 <func_arg>/94 <f_tail>/95
+<func_arg> ::= <all_type_names>/96 [id]/97
+<all_type_names> ::= <simple_type_name>/98
+<all_type_names> ::= [enum]/99
+<all_type_names> ::= [set]/100
+
+//5.3
+<block> ::= [LeftCurlyBracket]/101 <b_tail>/102 [Semicolon]/103 [RightCurlyBracket]/104
+<b_tail> ::= ε/105
+//ЗАГЛУШКА
+//<b_tail> ::= <stmt> <b_tail>
+<expr> ::= ε/106
+
+
+
+
+
+
+
+
+//GRAMMAR LL(1) --------------------------------------------------
+S ::= <program> <end>
+<program> ::= <func> <p_tail>
+<p_tail> ::= ε
+<p_tail> ::= <program>
+<func> ::= <func_type> [id] [LeftRoundBracket] <func_args> [RightRoundBracket] <block>
+
+//1 <func_type>
+<func_type> ::= [void]
+<func_type> ::= <simple_type_name>
+<simple_type_name> ::= [int]
+<simple_type_name> ::= [float]
+<simple_type_name> ::= [string]
+<simple_type_name> ::= [bool]
+
+//2 <func_args>
+<func_args> ::= ε
+<func_args> ::= <func_arg> <f_tail>
+<f_tail> ::= ε
+<f_tail> ::= [Comma] <func_arg> <f_tail>
+<func_arg> ::= <all_type_names> [id]
+<all_type_names> ::= <simple_type_name>
+<all_type_names> ::= [enum]
+<all_type_names> ::= [set]
+
+//3 <block>
+<block> ::= [LeftCurlyBracket] <b_tail> [Semicolon] [RightCurlyBracket]
+<b_tail> ::= ε
+<b_tail> ::= <stmt> <b_tail>
+
+<stmt> ::= <for>
+<stmt> ::= <if_cond>
+<stmt> ::= <return>
+<stmt> ::= <tuple>
+
+//3.1 <for>
+<for> ::= [for] [LeftRoundBracket] <for_cond> [RightRoundBracket] <block>
+<for_cond> ::= [id] [Assignment] <expr> [Semicolon] <boolean_expr> [Semicolon] [id] = <expr>
+
+<expr> ::= <term> <expr_tail>
+<expr_tail> ::= ε
+<expr_tail> ::= <op_1> <term>
+<op_1> ::= [Addition]
+<op_1> ::= [Subtraction]
+
+<term> ::= <factor> <term_tail>
+<term_tail> ::= ε
+<term_tail> ::= <op_2> <factor>
+<op_2> ::= [Multiplication]
+<op_2> ::= [Division]
+
+<factor> ::= <exp> <fact_tail>
+<term_tail> ::= ε
+<term_tail> ::= [Caret] <exp>
+
+<exp> ::= [LeftRoundBracket] <expr> [RightRoundBracket]
+<exp> ::= [id]
+<exp> ::= <func_call>
+<exp> ::= [literal]
+<exp> ::= <enum>
+<exp> ::= <array>
+<exp> ::= <set>
+
+???????????????
+//3.1.1 <enum>
+<enum> ::= <en_name> [id] [LeftCurlyBracket] <content> [RightCurlyBracket]
+<en_name> ::= ε
+<en_name> ::= [enum]
+<content> ::= ε
+<content> ::= <enum_obj> <con_tail>
+<con_tail> ::= ε
+<con_tail> ::= [Comma] <enum_obj> <con_tail>
+
+//3.1.2 <array>
+//3.1.3 <set>
+
+<func_call> ::= [id] [LeftRoundBracket] <func_params> [RightRoundBracket]
+<func_params> ::= ε
+<func_params> ::= <expr> <fp_tail>
+<fp_tail> ::= ε
+<fp_tail> ::= [Comma]<expr> <fp_tail>
+
+<boolean_expr> ::= <exp> <bool_tail>(‘==’ | ‘!=’ | ‘>’ | ‘<’ | ‘>=’ | ‘<=’) <exp>
+<bool_tail> ::= [Equal]
+<bool_tail> ::= [NotEqual]
+<bool_tail> ::= [Greater]
+<bool_tail> ::= [Less]
+<bool_tail> ::= [GreaterEqual]
+<bool_tail> ::= [LessEqual]
+
+//3.2 <if_cond>
+<if_cond> ::= [if] [LeftRoundBracket] <boolean_expr> [RightRoundBracket] <block> <if_tail>
+<if_tail> ::= ε
+<if_tail> ::= [else] <block>
+
+//3.3 <tuple>
+<tuple> ::= <enum_obj>
+<enum_obj> ::= ε
+<enum_obj> ::= <id> <eno_tail> <enum_obj>
+<eno_tail> ::= ε
+<eno_tail> ::= [Colon] [literal]
+
+//3.4 <return>
+<return> ::= [return] <exp>
+
+
+//BNF-------------------------------------
+<program> ::= {<func>}+
+
+<func> ::= <func_type> <id> ‘(’ <func_args> ‘)’ <block>
+
+//1
+<func_type> ::= ‘void’ | <simple_type_name>
+
+//2
+<func_arg> ::= <all_type_names> <id>
+<func_args> ::= ε | (<func_arg> {‘,’ <func_arg>})
+<all_type_names> ::= ‘int’ | ‘float’ | ‘string’ | ‘bool’ | ‘enum’ | ‘set’
+
+//3
+<block> ::= ‘{‘ { <stmt> }* ‘;’  ‘}’
+<stmt> ::= <for> | <if_cond> | <return> | <tuple>
+
+
+//3.1
+<for> ::= ‘for’ ‘(‘ <for_cond> ‘)’ <block>
+<for_cond> ::= <id> ‘=’ <expr> ‘;’ <boolean_expr> ‘;’ <id> = <expr>
+<expr> ::= <term> [(‘+’ | ‘-’)<term>]
+<term> ::= <factor> [(‘*’ | ‘/’)<factor>]
+<factor> ::= <exp> [‘^’ <exp>]
+<exp> ::= ‘(‘ <expr> ‘)’ | <id> | <func_call> | <literal>
+<func_call> ::= <id> ‘(’ <func_params> ‘)’
+<func_params> ::= ε | (<expr> {‘,’ <expr>})
+<boolean_expr> ::= <exp> (‘==’ | ‘!=’ | ‘>’ | ‘<’ | ‘>=’ | ‘<=’) <exp>
+
+//3.2
+<if_cond> ::= ‘if’ ( <boolean_expr> ) <block> [‘else’ <block>]
+
+//3.3
+<return> ::= ‘return’ <exp>
+
+//3.4
+<tuple> ::= {enum_obj}*
+<enum_obj> ::= <id> [’:’ <int>]
+
+
+?????????????????
+<simple_type> ::= <int> | <float> | <string> | <bool>
+<complex_type> ::= <set> | <array> | <enum>
+
+<init_simple_type> ::= [<simple_type_name>] <id> ‘=’ <simple_type> | <func_call> ’;’
+<enum> ::= [‘enum’] <id> ‘{‘ ε | <enum_obj> {‘,’ <enum_obj>})’}’
+<array> ::= [<simple_type>] <id> ‘[’ ‘]’ ‘=’ ‘new’ <simple_type> ‘[’ <uint> | <func_call>‘]’
+<set> ::= [‘set’] <id> ‘[’ ‘]’ ‘=’ ‘new’ ‘set’ ‘[’ <uint> | <func_call> ‘]’
+
+<object_call> ::= <id> [’.’ <id>]
+<object_func_call> ::= <object_call>  {’.’ <func_call>}
+

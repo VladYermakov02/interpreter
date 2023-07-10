@@ -1,0 +1,82 @@
+//GRAMMAR LL1 VER5----------------------------------------------------------------------------
+             F1: adds new element to func descriptor list, its return type
+             F2: adds func name
+             F3: adds first token id in current block
+             F4: adds last token id in current block
+             F6: adds an argument type and name to an argument list
+             F5: adds ready function descriptor to a list
+
+             S ::= <program>/1 [end]/2
+     <program> ::= <action>/3 <program>/5
+     <program> ::= ε/4
+      <action> ::= [void]/6+F1 [id]/9+F2 <func_declar>/10
+      <action> ::= [enum]/7 [id]/11 <enum_declar>/12
+      <action> ::= <simple_type>/8+F1 [id]/13+F2 <declaration>/14
+ <declaration> ::= [Assignment]/15 <var_declar>/17
+ <declaration> ::= <func_declar>/16
+  <var_declar> ::= <var_init>/18 [Semicolon]/19
+ <func_declar> ::= <argument>/20 <block>/21
+ <enum_declar> ::= <enum>/22
+
+ <simple_type> ::= [int]/23
+ <simple_type> ::= [float]/24
+ <simple_type> ::= [string]/25
+ <simple_type> ::= [bool]/26
+
+    <var_init> ::= <expr> /27
+    <argument> ::= [LeftRoundBracket]/28 <func_args>/30 [RightRoundBracket]/31
+    <argument> ::= ε/29 // for enum
+    <block> ::= [LeftCurlyBracket]/32+F3 <content>/33 [RightCurlyBracket]/34+F4+F5
+
+   <expr> ::= <term>/35 <expr_tail>/36
+   <expr_tail> ::= <op_1>/37 <term>/39
+   <expr_tail> ::= ε/38
+   <op_1> ::= [Addition]/40
+   <op_1> ::= [Subtraction]/41
+
+   <term> ::= <exp>/42 <term_tail>/43
+   <term_tail> ::= <op_2>/44 <exp>/46
+   <term_tail> ::= ε/45
+   <op_2> ::= [Multiplication]/47
+   <op_2> ::= [Division]/48
+
+   <exp> ::= [LeftRoundBracket]/49 <expr>/53 [RightRoundBracket]/54
+   <exp> ::= [id]/50 <exp_tail>/55
+   <exp> ::= [Number]/51
+   <exp> ::= [String Literal]/52
+   <exp_tail> ::= <func_call>/56
+   <exp_tail> ::= ε/57
+
+
+<func_args> ::= <func_arg>/58 <f_tail>/60
+<func_args> ::= ε/59
+<func_arg> ::= <all_type>/61+F6+F7 [id]/62
+<all_type> ::= <simple_type>/63
+<all_type> ::= [enum]/64
+<f_tail> ::= [Comma]/65 <func_arg>/67 <f_tail>/68
+<f_tail> ::= ε/66
+
+
+<content> ::= [id]/69 <content_tail>/71 [Semicolon]/72 <content>/73
+<content> ::=  ε/70
+
+//func_content
+<content_tail> ::= [Assignment]/74  <var_init>/77
+<content_tail> ::= <enum> /75
+<content_tail> ::= <func_call>/76
+<enum> ::= [LeftCurlyBracket]/78 <enum_content>/79 [RightCurlyBracket]/80
+<enum_content> ::= [id]/81 <enum_tail>/83
+<enum_content> ::= ε/82
+<enum_tail> ::= <en1_tail>/84 <en2_tail>/85
+<en1_tail> ::= [Colon]/86 [Number]/88
+<en1_tail> ::= ε/87
+<en2_tail> ::= [Comma]/89 [id]/91 <enum_tail>/92
+<en2_tail> ::= ε/90
+
+//func_call
+<func_call> ::= [LeftRoundBracket]/93 <func_params>/95 [RightRoundBracket]/96
+<func_call> ::= ε/94
+<func_params> ::= [id]/97 <fp_tail>/99
+<func_params> ::= ε/98
+<fp_tail> ::= [Comma]/100 [id]/102 <fp_tail>/103
+<fp_tail> ::= ε/101
