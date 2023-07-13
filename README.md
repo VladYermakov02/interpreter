@@ -22,10 +22,10 @@ The third task is to create a parser that, based on the previously created lexic
 Then, description of the chosen method of implementing the parser.
 To solve our task, we first convert the grammar to LL(1) on the basis of the previously created BNF. The created grammar was then used to distinguish states, on the basis of which a store-and-forward automaton was created, which we use to parse the submitted code.
 
-The forth task is task statement
+The forth task is task statement.
 Generate intermediate code by building descriptors based on the lexical and parsers created in the previous labs. The program should output the data of function descriptors (type, name, number of the first token of the function body, number of the last token of the function body, type of arguments, argument names) as a demonstration example.
 
-And last but not least is	theoretical information
+And last but not least is	theoretical information.
 To generate intermediate code, you use the creation of descriptors based on the language grammar. This method consists in adding semantic elements to certain parts of the grammar, i.e. in our case, adding actions to states. In this way, the process of creating a parser and starting code generation is linked. In this case, the parser can exist as a separate operating mechanism, but actions are added to the grammar, which then also correspond to the states of the automaton and are present in the code. This way, you can build descriptors for the main constructs of the language by assigning actions to individual parts of the grammar, such as loops and functions. 
 My program demonstrates adding actions to the states associated with creating functions. Such grammar modifications are displayed on the automaton in the form of function references, as well as in the state classes and the parser itself. Function descriptors include the following information: type of return value, name, argument type, argument names, number of the first token of the function body, and number of the last token of the function body.
 
