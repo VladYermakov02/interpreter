@@ -2,7 +2,7 @@
 Interpreter to my language which is similar to Java
 
 ## Project description
-The first task is create is to decribe language and write BNF of the language.
+The first task is to decribe language and write BNF of the language.
 
 The second task is a lexical analyzer. A lexical analyser identifies and recognises classes of tokens. Performs the task by studying the classes of tokens and creating an algorithm that can split the program code into tokens and distinguish between the classes and subclasses of tokens to which they belong, according to the specifications. 
 
